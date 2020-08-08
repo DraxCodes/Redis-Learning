@@ -6,4 +6,8 @@
     <RootNamespace>Redis_Learning</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="BeetleX.Redis" Version="0.9.7.9" />
+  </ItemGroup>
+
 </Project>
