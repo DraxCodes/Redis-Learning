@@ -9,20 +9,14 @@ namespace Redis_Learning
         static async Task Main()
         {
             var redisStuff = new RedisStuff();
-            var text = await redisStuff.GetTest();
+            var text = await redisStuff.GetStringAsync("test");
 
-            if (text is null)
-            {
-                Console.WriteLine("IT FAILED!");
-            }
-            else
-            {
-                Console.WriteLine(text);
-            }
+            Console.WriteLine(text);
 
-            await redisStuff.CreateTest("Test Input");
-            Console.WriteLine("YAY");
-            Console.ReadLine();
+            await redisStuff.CreateTestEntryAsync("Test Key", "Test Value");
+
+            await redisStuff.ExpireInAsync("Test Key", TimeSpan.FromSeconds(10));
+
         }
     }
 
@@ -34,14 +28,19 @@ namespace Redis_Learning
             Redis.Default.Host.AddWriteHost("192.168.0.17").Password = "pass123";
         }
 
-        internal async Task<string> GetTest()
+        internal async Task<string> GetStringAsync(string key)
         {
-            return await Redis.Get<string>("test");
+            return await Redis.Get<string>(key);
         }
 
-        internal async Task CreateTest(string input)
+        internal async Task CreateTestEntryAsync(string key, string value)
         {
-            await Redis.Set("Test Create", input);
+            await Redis.Set(key, value);
+        }
+
+        internal async Task ExpireInAsync(string key, TimeSpan time)
+        {
+            await Redis.Pexpire(key, (long)time.TotalMilliseconds);
         }
     }
 }
